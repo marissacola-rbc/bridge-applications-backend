@@ -1,5 +1,4 @@
 const faker = require('faker');
-const { createSeedData } = require('../seed-data.helpers');
 
 const genderOptions = ['Woman', 'Agender', 'Non-binary', 'Man'];
 const nonGenderOptions = [
@@ -13,17 +12,13 @@ exports.seed = knex => {
   return knex('identifying_info')
     .del()
     .then(() => {
+      const fullList = genderOptions.concat(nonGenderOptions);
       return knex('identifying_info').insert(
-        createSeedData(20, () => {
-          const name = faker.helpers.randomize(
-            genderOptions.concat(nonGenderOptions),
-          );
-          return {
-            name,
-            is_gender_related: genderOptions.includes(name),
-            user_generated: faker.random.boolean(),
-          };
-        }),
+        fullList.map(item => ({
+          name: item,
+          is_gender_related: genderOptions.includes(item),
+          user_generated: faker.random.boolean(),
+        })),
       );
     });
 };
