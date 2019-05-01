@@ -10,7 +10,6 @@ exports.up = (knex, Promise) => {
       table
         .integer('question_id')
         .unsigned()
-        .unique()
         .references('id')
         .inTable('questions')
         .onDelete('cascade');
@@ -21,28 +20,24 @@ exports.up = (knex, Promise) => {
       table
         .integer('user_id')
         .unsigned()
-        .unique()
         .references('id')
         .inTable('users')
         .onDelete('cascade');
       table
         .integer('answer_id')
         .unsigned()
-        .unique()
         .references('id')
         .inTable('answers')
         .onDelete('cascade');
       table
         .integer('application_id')
         .unsigned()
-        .unique()
         .references('id')
         .inTable('applications')
         .onDelete('cascade');
       table
         .integer('question_id')
         .unsigned()
-        .unique()
         .references('id')
         .inTable('questions')
         .onDelete('cascade');
