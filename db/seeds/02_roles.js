@@ -8,7 +8,7 @@ exports.seed = knex => {
     .del()
     .then(() => {
       return knex('roles').insert(
-        createSeedData(20, () => ({
+        createSeedData(4, () => ({
           name: faker.helpers.randomize(roles),
         })),
       );

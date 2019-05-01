@@ -11,14 +11,12 @@ exports.up = (knex, Promise) => {
       table
         .integer('cohort_id')
         .unsigned()
-        .unique()
         .references('id')
         .inTable('cohorts')
         .onDelete('cascade');
       table
         .integer('user_id')
         .unsigned()
-        .unique()
         .references('id')
         .inTable('users')
         .onDelete('cascade');
