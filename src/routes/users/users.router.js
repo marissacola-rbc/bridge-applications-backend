@@ -1,18 +1,16 @@
 const express = require('express');
-const config = require('../../../knexfile');
 const database = require('../../db');
 
 const {
   listUsersController,
   getUserController,
   createUserController,
-  listUsersControllerWithModel,
 } = require('./users.controller');
 const { check } = require('express-validator/check');
 
 const usersRouter = express.Router();
 
-usersRouter.get('', listUsersControllerWithModel);
+usersRouter.get('', listUsersController);
 usersRouter.get('/:userId', getUserController);
 usersRouter.post(
   '',

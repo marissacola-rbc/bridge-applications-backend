@@ -2,8 +2,9 @@ const config = require('../../../knexfile');
 const database = require('knex')(config);
 const { validationResult } = require('express-validator/check');
 const Users = require('./users.model');
+const IdentifyingInfo = require('../identifyingInfo/identifyingInfo.model');
 
-const listUsersController = (request, response, next) => {
+const listUsersControllerOG = (request, response, next) => {
   return database('users')
     .select()
     .then(users => {
@@ -14,45 +15,21 @@ const listUsersController = (request, response, next) => {
     });
 };
 
-const listUsersControllerWithModel = async (req, res, next) => {
+const listUsersController = async (req, res, next) => {
   return Users.query()
     .eager('identifying_info')
     .then(users => res.json({ users }))
     .catch(error => next(error));
 };
 
-// TO DO
-// const getUserWithModel = async (req, res, next) => {
-//   return Users.query();
-// };
-
 const getUserController = async (req, res, next) => {
   try {
-    const user = await database('users')
-      .select('users.*', 'identifying_info.name as identifier')
-      .join(
-        'users_identifying_info',
-        'users.id',
-        '=',
-        'users_identifying_info.user_id',
-      )
-      .join(
-        'identifying_info',
-        'identifying_info.id',
-        '=',
-        'users_identifying_info.identifying_info_id',
-      )
-      .where({ 'users.id': req.params.userId });
+    const user = await Users.getUser(req.params.userId);
 
-    if (user.length === 0) {
+    if (user === {}) {
       return res.status(404).json({ error: 'user not found' });
     } else {
-      return res.json({
-        user: {
-          ...user[0],
-          identifying_info: user.map(u => u.identifier),
-        },
-      });
+      return res.json(user);
     }
   } catch (error) {
     next(error);
@@ -77,69 +54,57 @@ const createUserController = async (req, res, next) => {
   } = req.body;
 
   try {
-    const users = await database('users')
-      .insert({
-        first_name,
-        last_name,
-        email,
-        pronouns,
-        employment_status,
-        employer,
-      })
-      .returning('*'); // select what we want back
+    const user = await Users.insertUser({
+      first_name,
+      last_name,
+      email,
+      pronouns,
+      employment_status,
+      employer,
+    });
 
-    // identifying_info = [{'name': "blah", 'isGenderRelated': false}]
-    const names = identifying_info.map(i => i.name);
+    const existingNames = await IdentifyingInfo.getExistingNames(
+      identifying_info,
+    );
 
-    const existing = await database('identifying_info')
-      .select()
-      .whereIn('name', names);
-
-    if (existing.length) {
+    if (existingNames.length) {
       // create a new row in users_identifying_info
       await database('users_identifying_info').insert(
-        existing.map(info => ({
-          user_id: users[0].id,
+        existingNames.map(info => ({
+          user_id: user.id,
           identifying_info_id: info.id,
         })),
       );
 
-      if (existing.length === identifying_info.length) {
+      if (existingNames.length === identifying_info.length) {
         return res.json({
-          user: {
-            ...users[0],
-          },
+          user,
         });
       }
-
       const newInfos = identifying_info
-        .filter(info => !existing.find(i => i.name === info.name))
+        .filter(info => !existingNames.find(i => i.name === info.name))
         .map(i => ({
           name: i.name,
           is_gender_related: i.isGenderRelated,
           user_generated: true,
         }));
 
-      const newInfoIds = await database('identifying_info')
-        .insert(newInfos)
-        .returning('id');
+      const newInfoIds = await IdentifyingInfo.insertIdentifyingInfo(newInfos);
 
       if (newInfoIds.length) {
         await database('users_identifying_info').insert(
           newInfoIds.map(info => ({
-            user_id: users[0].id,
+            user_id: user.id,
             identifying_info_id: info,
           })),
         );
       }
     }
     return res.json({
-      user: {
-        ...users[0],
-      },
+      user,
     });
   } catch (error) {
-    next(err);
+    next(error);
   }
 };
 
@@ -147,5 +112,5 @@ module.exports = {
   listUsersController,
   getUserController,
   createUserController,
-  listUsersControllerWithModel,
+  listUsersControllerOG,
 };

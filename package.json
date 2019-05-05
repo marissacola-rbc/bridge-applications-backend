@@ -10,15 +10,12 @@
     "db:migrate:latest": "knex migrate:latest",
     "db:migrate:rollback": "knex migrate:rollback",
     "db:migrate:create": "knex migrate:make",
-    "db:seed": "knex seed:run",
-    "db:up": "knex-migrate up",
-    "db:down": "knex-migrate down"
+    "db:seed": "knex seed:run"
   },
   "author": "",
   "devDependencies": {
     "faker": "^4.1.0",
     "jest": "^22.4.4",
-    "knex-migrate": "^1.7.2",
     "nodemon": "^1.17.5"
   },
   "dependencies": {
