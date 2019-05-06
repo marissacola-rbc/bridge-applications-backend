@@ -1,3 +1,4 @@
+const faker = require('faker');
 const { createSeedData } = require('../seed-data.helpers');
 
 exports.seed = knex => {
@@ -14,7 +15,7 @@ exports.seed = knex => {
         createSeedData(20, i => {
           return {
             user_id: users[i].id,
-            identifying_info_id: identifying_info[i].id,
+            identifying_info_id: faker.helpers.randomize(identifying_info).id,
           };
         }),
       );

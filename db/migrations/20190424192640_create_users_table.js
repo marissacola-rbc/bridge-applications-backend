@@ -23,7 +23,7 @@ exports.up = (knex, Promise) => {
     })
     .createTable('identifying_info', table => {
       table.increments();
-      table.string('name');
+      table.string('name').unique();
       table.boolean('is_gender_related');
       table.boolean('user_generated');
     })
