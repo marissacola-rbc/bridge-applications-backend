@@ -11,6 +11,8 @@ const employmentStatuses = [
   'not_looking',
 ];
 
+const roles = ['admin', 'user'];
+
 exports.seed = knex => {
   return knex('users')
     .del() // deletes all existing entries
@@ -18,6 +20,7 @@ exports.seed = knex => {
       // Inserts seed entries
       return knex('users').insert(
         createSeedData(20, () => ({
+          role: faker.helpers.randomize(roles),
           first_name: faker.name.firstName(),
           last_name: faker.name.lastName(),
           email: faker.internet.email(),

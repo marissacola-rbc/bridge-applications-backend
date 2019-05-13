@@ -5,6 +5,8 @@ exports.up = (knex, Promise) => {
       table.string('name').notNullable();
       table.string('welcome_text', 1000).notNullable();
       table.string('thank_you_text', 1000).notNullable();
+      table.datetime('start_date').notNullable();
+      table.datetime('end_date').notNullable();
     })
     .createTable('applications', table => {
       table.increments();
@@ -20,8 +22,8 @@ exports.up = (knex, Promise) => {
         .references('id')
         .inTable('users')
         .onDelete('cascade');
-      table.boolean('accepted_test');
-      table.boolean('accepted_cohort');
+      table.boolean('accepted_test').defaultTo(false);
+      table.boolean('accepted_cohort').defaultTo(false);
     });
 };
 

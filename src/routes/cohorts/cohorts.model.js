@@ -15,21 +15,37 @@ class Cohorts extends Model {
       .where('id', cohortId);
   }
 
-  static createCohort(cohort) {
+  static createCohort({
+    name,
+    welcome_text,
+    thank_you_text,
+    start_date,
+    end_date,
+  }) {
     return Cohorts.query()
-      .insert(cohort)
+      .insert({ name, welcome_text, thank_you_text, start_date, end_date })
       .returning('*');
   }
 
-  static updateCohort({ cohortId, name, welcome_text, thank_you_text }) {
+  static updateCohort(cohortId, cohort) {
     return Cohorts.query()
       .where({ id: cohortId })
-      .update({
-        name,
-        welcome_text,
-        thank_you_text,
-      })
+      .patch(cohort)
       .returning('*');
+  }
+
+  static get relationMappings() {
+    const Applications = require('../applications/applications.model');
+    return {
+      applications: {
+        relation: Model.HasManyRelation,
+        modelClass: Applications,
+        join: {
+          from: 'cohorts.id',
+          to: 'applications.cohort_id',
+        },
+      },
+    };
   }
 }
 

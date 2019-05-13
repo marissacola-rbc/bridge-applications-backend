@@ -7,6 +7,7 @@ class Users extends Model {
 
   static get relationMappings() {
     const IdentifyingInfo = require('../identifyingInfo/identifyingInfo.model');
+    const Applications = require('../applications/applications.model');
     return {
       identifying_info: {
         relation: Model.ManyToManyRelation,
@@ -18,6 +19,14 @@ class Users extends Model {
             to: 'users_identifying_info.identifying_info_id',
           },
           to: 'identifying_info.id',
+        },
+      },
+      applications: {
+        relation: Model.HasManyRelation,
+        modelClass: Applications,
+        join: {
+          from: 'users.id',
+          to: 'applications.user_id',
         },
       },
     };
@@ -49,6 +58,7 @@ class Users extends Model {
         pronouns,
         employment_status,
         employer,
+        role,
       } = user[0];
       return {
         user: {
@@ -59,6 +69,7 @@ class Users extends Model {
           pronouns,
           employment_status,
           employer,
+          role,
           identifying_info: user.map(u => u.identifier),
         },
       };
@@ -85,6 +96,13 @@ class Users extends Model {
         pronouns,
       })
       .returning('*'); // select what we want back
+  }
+
+  static updateUser(userId, user) {
+    return Users.query()
+      .where({ id: userId })
+      .patch(user)
+      .returning('*');
   }
 }
 

@@ -1,7 +1,7 @@
 const { logger } = require('../utils/logger');
 
 const errorHandler = (err, req, res, next) => {
-  logger.error(err.message);
+  logger.error(JSON.stringify(err.message));
   if (process.env.NODE_ENV !== 'prod') {
     console.log(err.stack);
   }
