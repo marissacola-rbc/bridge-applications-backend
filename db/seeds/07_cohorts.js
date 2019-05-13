@@ -10,6 +10,8 @@ exports.seed = knex => {
           name: faker.random.words(),
           welcome_text: faker.lorem.sentences(),
           thank_you_text: faker.lorem.sentences(),
+          start_date: faker.date.past(),
+          end_date: faker.date.future(),
         })),
       );
     });

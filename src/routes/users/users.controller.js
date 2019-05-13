@@ -1,8 +1,8 @@
-const config = require('../../../knexfile');
-const database = require('knex')(config);
+const database = require('../../db');
 const { validationResult } = require('express-validator/check');
 const Users = require('./users.model');
 const IdentifyingInfo = require('../identifyingInfo/identifyingInfo.model');
+const { NotFoundError } = require('../../utils/errors');
 
 const listUsersControllerOG = (request, response, next) => {
   return database('users')
@@ -27,7 +27,7 @@ const getUserController = async (req, res, next) => {
     const user = await Users.getUser(req.params.userId);
 
     if (user === {}) {
-      return res.status(404).json({ error: 'user not found' });
+      throw new NotFoundError('user not found');
     } else {
       return res.json(user);
     }
@@ -37,12 +37,6 @@ const getUserController = async (req, res, next) => {
 };
 
 const createUserController = async (req, res, next) => {
-  const validationErrors = validationResult(req);
-
-  if (!validationErrors.isEmpty()) {
-    return res.status(400).json({ errors: validationErrors.array() });
-  }
-
   const {
     first_name,
     last_name,
@@ -108,9 +102,24 @@ const createUserController = async (req, res, next) => {
   }
 };
 
+const updateUserController = async (req, res, next) => {
+  try {
+    const updatedUser = await Users.updateUser(req.params.userId, req.body);
+
+    if (updatedUser.length) {
+      return res.json(updatedUser);
+    } else {
+      throw new NotFoundError('user not found');
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   listUsersController,
   getUserController,
   createUserController,
   listUsersControllerOG,
+  updateUserController,
 };

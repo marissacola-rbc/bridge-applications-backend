@@ -3,6 +3,7 @@ exports.up = (knex, Promise) => {
   return knex.schema
     .createTable('users', table => {
       table.increments(); // creates the id as the primary key with the name id (always do this first)
+      table.enu('role', ['admin', 'user']);
       table.string('first_name').notNullable();
       table.string('last_name').notNullable();
       table
@@ -41,27 +42,6 @@ exports.up = (knex, Promise) => {
         .references('id')
         .inTable('identifying_info')
         .onDelete('cascade');
-    })
-    .createTable('roles', table => {
-      table.increments();
-      table
-        .enu('name', ['admin', 'student', 'instructor', 'mentor'])
-        .notNullable();
-    })
-    .createTable('user_roles', table => {
-      table.increments();
-      table
-        .integer('user_id')
-        .unsigned()
-        .references('id')
-        .inTable('users')
-        .onDelete('cascade');
-      table
-        .integer('role_id')
-        .unsigned()
-        .references('id')
-        .inTable('roles')
-        .onDelete('cascade');
     });
 };
 
@@ -69,8 +49,6 @@ exports.up = (knex, Promise) => {
 exports.down = (knex, Promise) => {
   return knex.schema
     .dropTable('users_identifying_info')
-    .dropTable('user_roles')
     .dropTable('identifying_info')
-    .dropTable('roles')
     .dropTable('users');
 };
