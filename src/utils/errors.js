@@ -25,8 +25,18 @@ class ValidationError extends Error {
   }
 }
 
+class ForbiddenError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 403;
+    this.message = message;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
 module.exports = {
   NotFoundError,
   UnauthorizedError,
   ValidationError,
+  ForbiddenError,
 };

@@ -1,7 +1,9 @@
 const express = require('express');
 const database = require('../../db');
-const verifyUser = require('../../middleware/verify-user');
+const verifyToken = require('../../middleware/verify-token');
 const { validate } = require('../../middleware/validate');
+const { authorize } = require('../../middleware/authorize');
+const { ForbiddenError } = require('../../utils/errors');
 
 const {
   listUsersController,
@@ -13,8 +15,20 @@ const { check } = require('express-validator/check');
 
 const usersRouter = express.Router();
 
-usersRouter.get('', verifyUser, listUsersController);
-usersRouter.get('/:userId', verifyUser, getUserController);
+usersRouter.get(
+  '',
+  verifyToken,
+  authorize,
+  (req, res, next) => {
+    if (req.user.permissions.includes('read:users:all')) {
+      next();
+    } else {
+      next(new ForbiddenError());
+    }
+  },
+  listUsersController,
+);
+usersRouter.get('/:userId', verifyToken, getUserController);
 usersRouter.post(
   '',
   [
