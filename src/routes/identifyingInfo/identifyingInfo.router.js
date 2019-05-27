@@ -1,6 +1,6 @@
 const express = require('express');
 const { check } = require('express-validator/check');
-const verifyUser = require('../../middleware/verify-user');
+const verifyToken = require('../../middleware/verify-token');
 const { validate } = require('../../middleware/validate');
 const IdentifyingInfo = require('./identifyingInfo.model');
 const {
@@ -11,7 +11,7 @@ const {
 } = require('./identifyingInfo.controller');
 
 const identifyingInfoRouter = express.Router();
-identifyingInfoRouter.use(verifyUser);
+identifyingInfoRouter.use(verifyToken);
 
 identifyingInfoRouter.get('', listIdentifyingInfosController);
 identifyingInfoRouter.get('/:identifyingInfoId', getIdentifyingInfoController);

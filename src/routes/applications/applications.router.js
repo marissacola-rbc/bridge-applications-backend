@@ -1,6 +1,6 @@
 const express = require('express');
 const { check } = require('express-validator/check');
-const verifyUser = require('../../middleware/verify-user');
+const verifyToken = require('../../middleware/verify-token');
 const { validate } = require('../../middleware/validate');
 
 const {
@@ -14,7 +14,7 @@ const Cohorts = require('../cohorts/cohorts.model');
 const Users = require('../users/users.model');
 
 const applicationsRouter = express.Router();
-applicationsRouter.use(verifyUser);
+applicationsRouter.use(verifyToken);
 
 applicationsRouter.get('', listApplicationsController);
 applicationsRouter.get('/:applicationId', getApplicationController);

@@ -1,6 +1,6 @@
 const express = require('express');
 const { check } = require('express-validator/check');
-const verifyUser = require('../../middleware/verify-user');
+const verifyToken = require('../../middleware/verify-token');
 const { validate } = require('../../middleware/validate');
 const {
   listQuestionsController,
@@ -10,7 +10,7 @@ const {
 } = require('./questions.controller');
 
 const questionsRouter = express.Router();
-questionsRouter.use(verifyUser);
+questionsRouter.use(verifyToken);
 
 questionsRouter.get('', listQuestionsController);
 questionsRouter.get('/:questionId', getQuestionController);
