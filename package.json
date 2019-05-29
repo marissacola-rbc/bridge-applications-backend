@@ -6,6 +6,8 @@
     "start": "node src/index.js",
     "test": "jest",
     "dev": "nodemon src/index.js",
+    "lint": "eslint src",
+    "lint:ci": "eslint src --format junit --output-file $ESLINT_REPORT",
     "test:watch": "jest --watch",
     "db:migrate:latest": "knex migrate:latest",
     "db:migrate:rollback": "knex migrate:rollback",
@@ -20,6 +22,7 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
+    "eslint": "^5.16.0",
     "express": "^4.16.3",
     "express-jwt": "^5.3.1",
     "express-validator": "^5.3.1",

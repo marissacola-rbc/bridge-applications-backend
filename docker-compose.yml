@@ -4,6 +4,7 @@ services:
   server:
     container_name: server
     build: ./
+    dockerfile: ./dev/Dockerfile
     command: yarn dev
     ports:
       - 3001:3001
