@@ -1,6 +1,8 @@
-version: 2
+version: 2.1
+orbs:
+  aws-ecr: circleci/aws-ecr@6.0.0
 jobs:
-  build:
+  ci:
     docker:
       - image: circleci/node:10
     steps:
@@ -30,3 +32,15 @@ jobs:
           path: reports
       - store_test_results:
           path: reports
+workflows:
+  build-and-deploy:
+    jobs:
+      - ci
+      # - aws-ecr/build-and-push-image:
+      #     requires:
+      #       - ci
+      #     # filters:
+      #     #   branches:
+      #     #     only: master
+      #     repo: bridge-repo
+      #     tag: $CIRCLE_SHA1
