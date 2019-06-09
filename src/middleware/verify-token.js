@@ -24,23 +24,22 @@ const verifyToken = async (req, res, next) => {
     const token = req.headers.authorization.split('Bearer ')[1];
 
     if (token) {
-      console.log(token);
       const userId = Buffer.from(token, 'base64').toString('binary');
       const { user } = await Users.getUser(userId);
-
       if (isEmpty(user)) {
         throw new UnauthorizedError();
       } else {
         req.user = user;
-        next();
+        req.user.permissions = 'read:users:all';
       }
     } else {
       throw new UnauthorizedError();
     }
   } catch (error) {
-    return res.status(401).json();
+    return res.status(401).json(error);
   }
+  next();
 };
 
-// module.exports = verifyToken;
-module.exports = authenticate;
+module.exports = verifyToken;
+// module.exports = authenticate;

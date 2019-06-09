@@ -1,5 +1,4 @@
 const database = require('../../db');
-const { validationResult } = require('express-validator/check');
 const Users = require('./users.model');
 const IdentifyingInfo = require('../identifyingInfo/identifyingInfo.model');
 const { NotFoundError } = require('../../utils/errors');
@@ -18,7 +17,9 @@ const listUsersControllerOG = (request, response, next) => {
 const listUsersController = async (req, res, next) => {
   return Users.query()
     .eager('identifying_info')
-    .then(users => res.json({ users }))
+    .then(users => {
+      return res.json({ users });
+    })
     .catch(error => next(error));
 };
 
