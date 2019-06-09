@@ -20,26 +20,24 @@ const authenticate = jwt({
 });
 
 const verifyToken = async (req, res, next) => {
-  // try {
-  //   const token = req.headers.authorization.split('Bearer ')[1];
+  try {
+    const token = req.headers.authorization.split('Bearer ')[1];
 
-  //   if (token) {
-  //     console.log(token);
-  //     const userId = Buffer.from(token, 'base64').toString('binary');
-  //     const { user } = await Users.getUser(userId);
-
-  //     if (isEmpty(user)) {
-  //       throw new UnauthorizedError();
-  //     } else {
-  //       req.user = user;
-  //       next();
-  //     }
-  //   } else {
-  //     throw new UnauthorizedError();
-  //   }
-  // } catch (error) {
-  //   return res.status(401).json();
-  // }
+    if (token) {
+      const userId = Buffer.from(token, 'base64').toString('binary');
+      const { user } = await Users.getUser(userId);
+      if (isEmpty(user)) {
+        throw new UnauthorizedError();
+      } else {
+        req.user = user;
+        req.user.permissions = 'read:users:all';
+      }
+    } else {
+      throw new UnauthorizedError();
+    }
+  } catch (error) {
+    return res.status(401).json(error);
+  }
   next();
 };
 

@@ -32,7 +32,6 @@ const authorize = (req, res, next) => {
   }
 
   //   programatically authorize each endpoint
-  console.log(req);
 
   next();
 };

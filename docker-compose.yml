@@ -4,7 +4,6 @@ services:
   server:
     container_name: server
     build: ./
-    dockerfile: ./dev/Dockerfile
     command: yarn dev
     ports:
       - 3001:3001
@@ -32,6 +31,11 @@ services:
   migrations:
     container_name: run_migrations
     build: ./
+    environment:
+      RDS_DB_NAME: 'bridge-applications-local'
+      RDS_HOSTNAME: 'db'
+      RDS_USERNAME: 'admin'
+      RDS_PASSWORD: 'admin'
     command: npm run db:migrate:latest
     links:
       - db
@@ -41,6 +45,11 @@ services:
   seeds:
     container_name: run_seeds
     build: ./
+    environment:
+      RDS_DB_NAME: 'bridge-applications-local'
+      RDS_HOSTNAME: 'db'
+      RDS_USERNAME: 'admin'
+      RDS_PASSWORD: 'admin'
     command: npm run db:seed
     links:
       - db
