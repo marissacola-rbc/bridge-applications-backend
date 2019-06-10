@@ -3,6 +3,9 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 require('dotenv').config({ path: '.env' });
 
+const AWS = require('aws-sdk');
+AWS.config.update({ region: 'us-east-1' });
+
 const router = require('./api');
 const { logger } = require('./utils/logger');
 const { errorHandler } = require('./middleware/error-handler');
