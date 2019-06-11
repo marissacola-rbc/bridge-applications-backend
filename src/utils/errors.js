@@ -34,9 +34,19 @@ class ForbiddenError extends Error {
   }
 }
 
+class ServerError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 500;
+    this.message = message;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
 module.exports = {
   NotFoundError,
   UnauthorizedError,
   ValidationError,
   ForbiddenError,
+  ServerError,
 };

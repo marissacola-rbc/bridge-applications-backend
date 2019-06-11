@@ -8,6 +8,7 @@ const {
   getApplicationController,
   createApplicationController,
   updateApplicationController,
+  submitApplicationController,
 } = require('./applications.controller');
 const Applications = require('./applications.model');
 const Cohorts = require('../cohorts/cohorts.model');
@@ -54,5 +55,6 @@ applicationsRouter.post(
   createApplicationController,
 );
 applicationsRouter.put('/:applicationId', updateApplicationController);
+applicationsRouter.post('/:applicationId/submit', submitApplicationController);
 
 module.exports = { applicationsRouter };
